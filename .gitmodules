@@ -1,0 +1,10 @@
+[submodule "node_manager"]
+	path = node_manager
+	url = https://github.com/xonder05/node_manager.git
+[submodule "ros2_interface_api"]
+	path = ros2_interface_api
+	url = https://github.com/xonder05/ros2_interface_api.git
+[submodule "node-red-ros2-orchestrator"]
+	path = node-red-ros2-orchestrator
+	url = https://github.com/xonder05/node-red-ros2-orchestrator.git
+	
