@@ -1,0 +1,46 @@
+FROM ros:jazzy-ros-base
+
+# -------------------- ROS2 --------------------
+
+RUN echo "source /opt/ros/jazzy/setup.bash" >> ~/.bashrc
+RUN echo "source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash" >> ~/.bashrc
+
+# -------------------- APT --------------------
+
+RUN apt-get update && apt-get install -y \
+    # holonic-ros deps
+    python3-websockets \
+    # node_manager deps
+    libboost-json-dev \
+    libboost-thread-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# -------------------- node.js --------------------
+
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | sudo bash -
+RUN apt-get install -y nodejs
+
+# -------------------- node-red --------------------
+
+RUN npm install -g node-red
+
+# -------------------- holonic-ros --------------------
+
+WORKDIR /root/.node-red/
+
+COPY ../submodules/ros2_interface_api ros2_interface_api
+RUN npm install --prefix ./ros2_interface_api
+
+COPY ../submodules/node-red-ros2-orchestrator node-red-ros2-orchestrator
+RUN npm install --prefix ./node-red-ros2-orchestrator
+RUN npm install --prefix ./node-red-ros2-orchestrator ./ros2_interface_api --no-save
+
+RUN npm install ./node-red-ros2-orchestrator --no-save
+
+# -------------------- node_manager --------------------
+
+WORKDIR /root/nm_ros2_ws/
+COPY ../submodules/node_manager ./src/node_manager
+
+RUN . /opt/ros/jazzy/setup.sh && colcon build
+RUN echo "source ~/nm_ros2_ws/install/setup.bash" >> ~/.bashrc

@@ -1,0 +1,60 @@
+FROM ros:jazzy-ros-base
+
+# -------------------- ROS2 --------------------
+
+RUN echo "source /opt/ros/jazzy/setup.bash" >> ~/.bashrc
+RUN echo "source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash" >> ~/.bashrc
+
+# -------------------- APT --------------------
+
+RUN apt-get update && apt-get install -y \
+    python3-pip \
+    # ros2_control
+    ros-jazzy-ros2-control \
+    ros-jazzy-ros2-controllers \
+    # slam_toolbox
+    ros-jazzy-slam-toolbox \
+    # nav2
+    ros-jazzy-navigation2 \
+    ros-jazzy-nav2-bringup \
+    # pigpio
+    wget \
+    # ydlidar
+    swig \
+    # pca9685_ros2_control dependency
+    libi2c-dev \
+    libncurses-dev \ 
+    # node_manager deps
+    libboost-json-dev \
+    libboost-thread-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN pip install --break-system-packages transforms3d mpu6050
+
+# -------------------- Sources --------------------
+
+# pigpio
+WORKDIR /root
+RUN wget https://github.com/joan2937/pigpio/archive/master.zip && unzip master.zip
+WORKDIR /root/pigpio-master
+RUN make && make install
+
+# ydlidar
+WORKDIR /root
+RUN git clone https://github.com/YDLIDAR/YDLidar-SDK.git
+WORKDIR /root/YDLidar-SDK/build
+RUN cmake .. && make && make install
+
+# todo libcamera
+
+# -------------------- waferbot_ros2_ws + node_manager --------------------
+
+WORKDIR /root
+COPY waferbot_ros2_ws waferbot_ros2_ws 
+COPY node_manager ./waferbot_ros2_ws/src/node_manager
+
+WORKDIR /root/waferbot_ros2_ws
+RUN . /opt/ros/jazzy/setup.sh && colcon build
+RUN echo "source ~/waferbot_ros2_ws/install/setup.bash" >> ~/.bashrc
+
+RUN chmod 0777 src/ydlidar_ros2_driver/startup/* && bash src/ydlidar_ros2_driver/startup/initenv.sh
