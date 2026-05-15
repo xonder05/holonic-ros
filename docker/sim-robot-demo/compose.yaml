@@ -1,0 +1,18 @@
+services:
+
+  sim-robot-demo:
+    image: sim-robot-demo
+    
+    build:
+      context: ../..
+      dockerfile: ./docker/sim-robot-demo/dockerfile
+    
+    # run on host "xhost +local:"
+    environment: # -e
+      - DISPLAY=${DISPLAY}
+    volumes: # -v
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    
+    stdin_open: true # -i
+    tty: true # -t
+    command: bash

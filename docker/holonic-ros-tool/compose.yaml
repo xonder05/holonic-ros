@@ -1,0 +1,15 @@
+services:
+
+  holonic-ros-tool:    
+    image: holonic-ros-tool
+    
+    build:
+      context: ../..
+      dockerfile: ./docker/holonic-ros-tool/dockerfile
+    
+    ports: # -p
+      - 1880:1880 
+
+    stdin_open: true # -i
+    tty: true # -t
+    command: bash

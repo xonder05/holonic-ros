@@ -1,10 +1,5 @@
 FROM ros:jazzy-ros-base
 
-# -------------------- ROS2 --------------------
-
-RUN echo "source /opt/ros/jazzy/setup.bash" >> ~/.bashrc
-RUN echo "source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash" >> ~/.bashrc
-
 # -------------------- APT --------------------
 
 RUN apt-get update && apt-get install -y \
@@ -29,12 +24,17 @@ RUN apt-get update && apt-get install -y \
 
 RUN pip install --break-system-packages simpful
 
+# -------------------- ROS2 --------------------
+
+RUN echo "source /opt/ros/jazzy/setup.bash" >> ~/.bashrc
+RUN echo "source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash" >> ~/.bashrc
+
 # -------------------- waferbot_ros2_ws + node_manager --------------------
 
 WORKDIR /root
-COPY ../submodules/waferbot_ros2_ws waferbot_ros2_ws 
-COPY ../submodules/node_manager ./waferbot_ros2_ws/src/node_manager
+COPY ./src/waferbot_ros2_ws waferbot_ros2_ws 
+COPY ./src/node_manager ./waferbot_ros2_ws/src/node_manager
 
 WORKDIR /root/waferbot_ros2_ws
-RUN . /opt/ros/jazzy/setup.sh && colcon build --packages-select-regex "node_manager" "waferbot_*"
+RUN . /opt/ros/jazzy/setup.sh && colcon build --packages-select-regex "node_manager" "nav2_lifecycle_manager" "waferbot_*" 
 RUN echo "source ~/waferbot_ros2_ws/install/setup.bash" >> ~/.bashrc
