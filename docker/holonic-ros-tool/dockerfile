@@ -25,19 +25,20 @@ RUN npm install @flowfuse/node-red-dashboard
 # -------------------- holonic-ros --------------------
 
 WORKDIR /root/.node-red/
+
 COPY ./src/ros2_interface_api ros2_interface_api
-# install deps from package.json
-RUN npm install --prefix ./ros2_interface_api
+RUN npm install --prefix ./ros2_interface_api colors@^1.4.0 websocket@^1.0.35
+
 COPY ./src/node-red-ros2-orchestrator node-red-ros2-orchestrator
-# install deps from package.json
-RUN npm install --prefix ./node-red-ros2-orchestrator
+RUN npm install --prefix ./node-red-ros2-orchestrator ansi-to-html@^0.7.2
+
 # install ros2_interface_api into node-red-ros2-orchestrator
 RUN npm install --prefix ./node-red-ros2-orchestrator ./ros2_interface_api --no-save
 # install node-red-ros2-orchestrator into node-red
 RUN npm install ./node-red-ros2-orchestrator --no-save
 
 # copy example flow
-RUN cp ./node-red-ros2-orchestrator/examples/waferbot-multi-robot/flows.json ./
+RUN cp ./node-red-ros2-orchestrator/examples/waferbot/flows.json ./
 
 # -------------------- ROS2 --------------------
 

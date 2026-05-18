@@ -26,6 +26,7 @@ sudo make install
 cd ~
 sudo rm -rf master.zip pigpio-master
 
+# daemon autostart
 sudo tee /etc/systemd/system/pigpiod.service > /dev/null << EOF
 [Unit]
 Description=pigpiod
