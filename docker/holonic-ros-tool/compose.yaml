@@ -7,6 +7,9 @@ services:
       context: ../..
       dockerfile: ./docker/holonic-ros-tool/dockerfile
     
+    network_mode: host
+    ipc: host
+
     ports: # -p
       - 1880:1880 
 
