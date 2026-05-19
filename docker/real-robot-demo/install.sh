@@ -89,7 +89,7 @@ sudo apt-get install -y python3-pip
 pip install --break-system-packages picamera2
 
 cd ~/.local/lib/python3.12/site-packages/picamera2
-sed -i "s/from picamera2\.previews import DrmPreview, NullPreview, QtGlPreview, QtPreview/from picamera2\.previews import NullPreview, QtGlPreview, QtPreview"/ ./picamera2.py
+sed -i "s/from picamera2\.previews import DrmPreview, NullPreview, QtGlPreview, QtPreview/from picamera2\.previews import NullPreview, QtGlPreview, QtPreview/" ./picamera2.py
 sed -i "/DRM = DrmPreview/d" ./picamera2.py
 sed -i "/from .drm_preview import DrmPreview/d" ./previews/__init__.py
 
@@ -107,10 +107,12 @@ sudo apt-get install -y libboost-json-dev libboost-thread-dev
 
 cd ~
 git clone --recurse-submodules https://github.com/xonder05/waferbot_ros2_ws.git
+
 cd ~/waferbot_ros2_ws/src
 git clone https://github.com/xonder05/node_manager.git
-cd ~/waferbot_ros2_ws
+sed -i "s/manager_id: \"FFFFFFFFFFFF\"/manager_id: \"FFFFFFFFFFFE\""/ ./node_manager/config/_manager.yaml
 
+cd ~/waferbot_ros2_ws
 source /opt/ros/jazzy/setup.bash
 colcon build
 echo "source ~/waferbot_ros2_ws/install/setup.bash" >> ~/.bashrc

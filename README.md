@@ -12,7 +12,7 @@
 ### real-robot-demo:
 - Flash Ubuntu Server 24.04 onto SD-Card.
 - SSH into RPI
-- copy and run `setup.sh` 
+- copy and run `install.sh` 
     - the installation takes around two hours
     - it will ask for sudo password multiple times throughout the installation
 - run `ros2 launch node_manager node_manager_launch.py`
